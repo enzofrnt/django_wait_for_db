@@ -1,6 +1,14 @@
 # django_wait_for_db
  Django app that provides a simple command to wait for the database to be ready before starting the server.
 
+## Installation
+
+Install the package using pip:
+
+```bash
+pip install django_wait_for_db
+```
+
 ## Usage
 
 Add `django_wait_for_db` to your `INSTALLED_APPS`:
