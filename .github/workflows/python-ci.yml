@@ -33,6 +33,10 @@ jobs:
         with:
           python-version: '3.x'
 
+        
+      - name: add codecov token
+        run: export CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }}
+
       # Installer Poetry
       - name: Install Poetry
         run: |
