@@ -45,7 +45,7 @@ jobs:
           poetry install
 
       - name: display tox version
-        run: tox --version
+        run: poetry run tox --version
 
       # Exécuter les tests avec tox et générer les rapports de couverture
       - name: Run tests with tox
