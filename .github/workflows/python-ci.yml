@@ -36,10 +36,6 @@ jobs:
         run: |
           poetry install
 
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
-
       - name: Run pre-commit hooks
         run: |
           poetry run pre-commit run --all-files
