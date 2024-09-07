@@ -75,5 +75,7 @@ repos:
           - "-rn"
           - "-sn"
           - "--rcfile=pyproject.toml"
+          - "--load-plugins=pylint_django,pylint_pytest"
+
         files: ^wait_for_db/
         exclude: (migrations/|tests/).*
