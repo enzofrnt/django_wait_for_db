@@ -40,8 +40,8 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
 
       # Installer tox
-      - name: Install tox
-        run: poetry add tox
+      # - name: Install tox
+      #   run: poetry add tox
 
       # Installer les dépendances du projet
       - name: Install dependencies
@@ -49,8 +49,7 @@ jobs:
 
       # Exécuter les tests avec tox et générer les rapports de couverture
       - name: Run tests with tox
-        run: |
-          poetry run tox
+        run: tox
 
       # Si les tests échouent, arrêter immédiatement le workflow
       - name: Stop on failure
