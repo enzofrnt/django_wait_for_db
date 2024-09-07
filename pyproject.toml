@@ -43,6 +43,7 @@ packages = [
 "Issues" = "https://github.com/enzofrnt/django_wait_for_db/issues"
 
 [tool.poetry.dependencies]
+tox = "^3.24"
 python = ">=3.8,<4.0"
 django = [
   { version = ">=4.2,<5.0", python = ">=3.8,<3.10" },
