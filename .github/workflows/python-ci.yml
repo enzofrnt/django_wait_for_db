@@ -47,7 +47,7 @@ jobs:
       # Installer tox
       - name: Install tox
         run: |
-          apt install tox
+          sudo apt install tox
 
         
 
