@@ -44,20 +44,13 @@ jobs:
         run: |
           poetry install
 
-      # Installer tox
-      - name: Install tox
-        run: |
-          sudo apt install tox
-
-        
-
       - name: display tox version
-        run: tox --version
+        run: poetry run tox --version
 
       # Exécuter les tests avec tox et générer les rapports de couverture
       - name: Run tests with tox
         run: |
-          tox
+          poetry run tox
 
       # Si les tests échouent, arrêter immédiatement le workflow
       - name: Stop on failure
