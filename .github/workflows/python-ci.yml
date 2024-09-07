@@ -1,14 +1,19 @@
 name: CI for Tests and Package Publishing
 
 on:
+  # Exécute les tests à chaque commit sur n'importe quelle branche
   push:
     branches:
       - '**'
+  # Exécute les tests pour chaque pull request vers la branche 'main'
   pull_request:
     branches:
       - main
+  # Exécute le workflow à chaque release publiée
   release:
-    types: [published]
+    types:
+      - published
+  # Permet l'exécution manuelle
   workflow_dispatch:
 
 permissions:
@@ -17,68 +22,86 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12]  # Test sur ces versions de Python
 
     steps:
+      # Récupérer le code source
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Install dependencies
-        run: poetry install
-
-      - name: Run tests with tox
-        run: poetry run tox
-
-      - name: Upload to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          flags: unittests
-          fail_ci_if_error: true
-          verbose: true
-
-      - name: Upload HTML coverage report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: htmlcov/
-
-  publish:
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.event_name == 'release'
-
-    steps:
-      - uses: actions/checkout@v4
-
+      # Configurer Python
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
 
+      # Installer Poetry
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.local/bin:$PATH"
 
+      # Installer les dépendances du projet via Poetry, incluant tox
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      # Exécuter les tests avec tox et générer les rapports de couverture
+      - name: Run tests with tox
+        run: |
+          poetry run tox
+
+      # Si les tests échouent, arrêter immédiatement le workflow
+      - name: Stop on failure
+        if: failure()
+        run: exit 1
+
+      # Envoyer les résultats de couverture à Codecov après chaque test
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml  # Le rapport XML de couverture
+          flags: unittests
+          fail_ci_if_error: true  # Arrêter si Codecov échoue
+          verbose: true
+
+      # Générer et sauvegarder les fichiers HTML de couverture
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/  # Répertoire contenant les fichiers HTML
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test  # Exécuter la publication seulement si les tests passent
+
+    if: github.event_name == 'release'  # Exécuter uniquement lors d'une release
+
+    steps:
+      # Récupérer le code source
+      - uses: actions/checkout@v4
+
+      # Configurer Python
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
+      # Installer Poetry
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      # Installer les dépendances du projet, sans les dépendances de développement
       - name: Install dependencies
         run: poetry install --no-dev
 
+      # Construire le package
       - name: Build package
         run: poetry build
 
+      # Publier sur PyPI
       - name: Publish package
         run: poetry publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
