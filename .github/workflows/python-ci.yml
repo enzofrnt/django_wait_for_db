@@ -39,17 +39,15 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.local/bin:$PATH"
 
-      # Installer tox
-      # - name: Install tox
-      #   run: poetry add tox
-
-      # Installer les dépendances du projet
+      # Installer les dépendances du projet via Poetry, incluant tox
       - name: Install dependencies
-        run: poetry install
+        run: |
+          poetry install
 
       # Exécuter les tests avec tox et générer les rapports de couverture
       - name: Run tests with tox
-        run: tox
+        run: |
+          poetry run tox
 
       # Si les tests échouent, arrêter immédiatement le workflow
       - name: Stop on failure
@@ -96,7 +94,7 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.local/bin:$PATH"
 
-      # Installer les dépendances du projet
+      # Installer les dépendances du projet, sans les dépendances de développement
       - name: Install dependencies
         run: poetry install --no-dev
 
