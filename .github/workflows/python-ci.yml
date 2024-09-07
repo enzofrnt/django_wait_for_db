@@ -33,10 +33,6 @@ jobs:
         with:
           python-version: '3.x'
 
-        
-      - name: add codecov token
-        run: export CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }}
-
       # Installer Poetry
       - name: Install Poetry
         run: |
@@ -70,6 +66,12 @@ jobs:
           flags: unittests
           fail_ci_if_error: true  # Arrêter si Codecov échoue
           verbose: true
+      
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       # Générer et sauvegarder les fichiers HTML de couverture
       - name: Upload HTML coverage report
