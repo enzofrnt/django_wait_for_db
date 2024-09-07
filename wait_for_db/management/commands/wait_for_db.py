@@ -13,14 +13,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Handle the command"""
         self.stdout.write("Waiting for database...")
+        self.stdout.flush()
         while True:
             try:
                 db_conn = connections[DEFAULT_DB_ALIAS]
                 db_conn.ensure_connection()
                 self.stdout.write(self.style.SUCCESS("Database available!"))
+                self.stdout.flush()
                 break
             except OperationalError:
                 self.stdout.write(
                     f'Database unavailable on {settings.DATABASES["default"]["HOST"]}:{settings.DATABASES["default"]["PORT"]}, waiting 1 second...'
                 )
+                self.stdout.flush()
                 time.sleep(1)
