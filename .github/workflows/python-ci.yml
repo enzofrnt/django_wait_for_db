@@ -36,8 +36,9 @@ jobs:
         run: |
           poetry install
 
-      - name: display tox version
-        run: poetry run tox --version
+      - name: Run pre-commit hooks
+        run: |
+          poetry run pre-commit run --all-files
 
       - name: Run tests with tox
         run: |
@@ -55,7 +56,7 @@ jobs:
           flags: unittests
           fail_ci_if_error: true
           verbose: true
-      
+
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
