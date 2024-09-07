@@ -1,0 +1,50 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [ "poetry-core" ]
+
+
+[tool.poetry]
+name = "django-wait-for-db"
+version = "1.0.3"
+description = "Simple Django app that provides a simple command to wait for the database to be ready before starting the server."
+authors = [ "enzo_frnt"]
+license = "MIT"
+readme = "README.md"
+keywords = [ "django and docker", "django database", "database", "wait for db"]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+packages = [
+  { include = "wait_for_db" },
+]
+
+[tool.poetry.urls]
+"Documentation" = "https://github.com/enzofrnt/django_wait_for_db/blob/main/README.md"
+"Source Code" = "https://github.com/enzofrnt/django_wait_for_db"
+"Issues" = "https://github.com/enzofrnt/django_wait_for_db/issues"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+django = [
+  { version = ">=4.2,<5.0", python = ">=3.8,<3.10" },
+  { version = ">=4.2,<5.3", python = ">=3.10" },      # Django 4.2 and 5.x for Python 3.10+
+]
