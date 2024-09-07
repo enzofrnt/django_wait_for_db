@@ -42,7 +42,7 @@ jobs:
 
       - name: Run pre-commit hooks
         run: |
-            pre-commit run --all-files
+          poetry run pre-commit run --all-files
 
       - name: Run tests with tox
         run: |
