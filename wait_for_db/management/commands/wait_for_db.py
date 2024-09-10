@@ -25,7 +25,8 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Database available!"))
                 self.stdout.flush()
                 break
-            except OperationalError:
+            except OperationalError as e:
+                self.stdout.write(self.style.ERROR(f"Error with database: {e}"))
                 if db_host or db_port:
                     self.stdout.write(
                         f"Database unavailable on {db_host}:{db_port}, waiting 1 second..."
