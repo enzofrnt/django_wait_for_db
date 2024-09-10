@@ -1,3 +1,6 @@
+
+[![codecov](https://codecov.io/gh/enzofrnt/django_wait_for_db/branch/main/graph/badge.svg?token=SU32PFC6V0)](https://codecov.io/gh/enzofrnt/django_wait_for_db)
+
 # django_wait_for_db
  Django app that provides a simple command to wait for the database to be ready before starting the server.
 
