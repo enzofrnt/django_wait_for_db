@@ -47,7 +47,7 @@ repos:
         exclude: (migrations/).*
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.4
+    rev: 1.8.6
     hooks:
       - id: bandit
         args: [ "-c", "pyproject.toml", "-r", "." ]
@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: pytest
         name: Pytest
-        entry: poetry run pytest -v
+        entry: uv run --with pytest --with pytest-django --with pytest-cov --with "django>=4.2,<5.3" pytest -v
         language: system
         types: [ python ]
         stages: [ commit ]
@@ -67,7 +67,7 @@ repos:
 
       - id: pylint
         name: pylint
-        entry: poetry run pylint
+        entry: uv run --with "pylint>=3.2.6,<4" --with pylint-pytest --with "django>=4.2,<5.3" pylint
         language: system
         types: [ python ]
         require_serial: true

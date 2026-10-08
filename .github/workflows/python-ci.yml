@@ -25,24 +25,23 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
 
       - name: Install dependencies
         run: |
-          poetry install
+          uv pip install --system -e .
+          uv pip install --system pre-commit tox codecov
 
       - name: Run pre-commit hooks
         run: |
-          poetry run pre-commit run --all-files
+          pre-commit run --all-files
 
       - name: Run tests with tox
         run: |
-          poetry run tox
+          tox
 
       - name: Stop on failure
         if: failure()
@@ -59,9 +58,12 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: junit.xml
+          report_type: test_results
+          fail_ci_if_error: true
 
       - name: Upload HTML coverage report
         if: always()
@@ -82,18 +84,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
 
-      - name: Install dependencies
-        run: poetry install --no-dev
+      - name: Install build dependencies
+        run: uv pip install --system build twine
 
       - name: Build package
-        run: poetry build
+        run: python -m build
 
       - name: Publish package
-        run: poetry publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload dist/* --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
