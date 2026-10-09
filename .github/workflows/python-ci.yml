@@ -60,6 +60,18 @@ jobs:
             tox-env: py312-django51
           - python-version: "3.12"
             tox-env: py312-django52
+          - python-version: "3.12"
+            tox-env: py312-django60
+          - python-version: "3.12"
+            tox-env: py312-django61
+          - python-version: "3.13"
+            tox-env: py313-django52
+          - python-version: "3.13"
+            tox-env: py313-django61
+          - python-version: "3.14"
+            tox-env: py314-django52
+          - python-version: "3.14"
+            tox-env: py314-django61
 
     steps:
       - uses: actions/checkout@v4
@@ -79,7 +91,7 @@ jobs:
         run: uv run --frozen --python ${{ matrix.python-version }} tox -e ${{ matrix.tox-env }}
 
       - name: Upload to Codecov
-        if: success() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]'
+        if: success() && matrix.tox-env == 'py314-django61' && github.actor != 'dependabot[bot]'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -89,7 +101,7 @@ jobs:
           verbose: true
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]' }}
+        if: ${{ !cancelled() && matrix.tox-env == 'py314-django61' && github.actor != 'dependabot[bot]' }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -98,7 +110,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Upload HTML coverage report
-        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' }}
+        if: ${{ !cancelled() && matrix.tox-env == 'py314-django61' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
