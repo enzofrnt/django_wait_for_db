@@ -19,15 +19,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v10.2.0
 
       - name: Install dependencies
         run: uv sync --frozen --python 3.12
@@ -60,17 +60,29 @@ jobs:
             tox-env: py312-django51
           - python-version: "3.12"
             tox-env: py312-django52
+          - python-version: "3.12"
+            tox-env: py312-django60
+          - python-version: "3.12"
+            tox-env: py312-django61
+          - python-version: "3.13"
+            tox-env: py313-django52
+          - python-version: "3.13"
+            tox-env: py313-django61
+          - python-version: "3.14"
+            tox-env: py314-django52
+          - python-version: "3.14"
+            tox-env: py314-django61
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v10.2.0
 
       - name: Install dependencies
         run: uv sync --frozen --python ${{ matrix.python-version }}
@@ -79,8 +91,8 @@ jobs:
         run: uv run --frozen --python ${{ matrix.python-version }} tox -e ${{ matrix.tox-env }}
 
       - name: Upload to Codecov
-        if: success() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]'
-        uses: codecov/codecov-action@v5
+        if: success() && matrix.tox-env == 'py314-django61' && github.actor != 'dependabot[bot]'
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
@@ -89,8 +101,8 @@ jobs:
           verbose: true
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]' }}
-        uses: codecov/codecov-action@v5
+        if: ${{ !cancelled() && matrix.tox-env == 'py314-django61' && github.actor != 'dependabot[bot]' }}
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: junit.xml
@@ -98,8 +110,8 @@ jobs:
           fail_ci_if_error: true
 
       - name: Upload HTML coverage report
-        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' }}
-        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && matrix.tox-env == 'py314-django61' }}
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: htmlcov/
@@ -111,15 +123,15 @@ jobs:
     if: github.event_name == 'release'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v10.2.0
 
       - name: Build and publish package
         env:

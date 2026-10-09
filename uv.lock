@@ -1206,7 +1206,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", marker = "python_full_version >= '3.8' and python_full_version < '3.10'", specifier = ">=4.2,<5" },
-    { name = "django", marker = "python_full_version >= '3.10'", specifier = ">=4.2,<5.3" },
+    { name = "django", marker = "python_full_version >= '3.10' and python_full_version < '3.12'", specifier = ">=4.2,<6" },
+    { name = "django", marker = "python_full_version >= '3.12'", specifier = ">=4.2,<6.2" },
 ]
 
 [package.metadata.requires-dev]
