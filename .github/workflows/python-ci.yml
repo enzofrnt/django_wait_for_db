@@ -81,7 +81,7 @@ jobs:
         run: tox -e ${{ matrix.tox-env }}
 
       - name: Upload to Codecov
-        if: success() && matrix.tox-env == 'py312-django52'
+        if: success() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -91,7 +91,7 @@ jobs:
           verbose: true
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' }}
+        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]' }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
