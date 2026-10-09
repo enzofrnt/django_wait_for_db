@@ -16,9 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -33,21 +32,56 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --system -e .
-          uv pip install --system pre-commit tox
+          uv pip install --system pre-commit
 
       - name: Run pre-commit hooks
-        run: |
-          pre-commit run --all-files
+        run: pre-commit run --all-files
 
-      - name: Run tests with tox
-        run: |
-          tox -e py312-django51
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.9"
+            tox-env: py39-django42
+          - python-version: "3.10"
+            tox-env: py310-django42
+          - python-version: "3.10"
+            tox-env: py310-django52
+          - python-version: "3.11"
+            tox-env: py311-django42
+          - python-version: "3.11"
+            tox-env: py311-django52
+          - python-version: "3.12"
+            tox-env: py312-django42
+          - python-version: "3.12"
+            tox-env: py312-django50
+          - python-version: "3.12"
+            tox-env: py312-django51
+          - python-version: "3.12"
+            tox-env: py312-django52
 
-      - name: Stop on failure
-        if: failure()
-        run: exit 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install tox
+        run: uv pip install --system tox
+
+      - name: Run tests
+        run: tox -e ${{ matrix.tox-env }}
 
       - name: Upload to Codecov
+        if: success() && matrix.tox-env == 'py312-django52'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -57,7 +91,7 @@ jobs:
           verbose: true
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' }}
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -66,7 +100,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Upload HTML coverage report
-        if: always()
+        if: ${{ !cancelled() && matrix.tox-env == 'py312-django52' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -76,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
 
-    if: github.event_name == 'release'  # Exécuter uniquement lors d'une release
+    if: github.event_name == 'release'
 
     steps:
       - uses: actions/checkout@v4
