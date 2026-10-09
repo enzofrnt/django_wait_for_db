@@ -30,12 +30,10 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Install dependencies
-        run: |
-          uv pip install --system -e .
-          uv pip install --system pre-commit
+        run: uv sync --frozen --python 3.12
 
       - name: Run pre-commit hooks
-        run: pre-commit run --all-files
+        run: uv run --frozen --python 3.12 pre-commit run --all-files
 
   test:
     runs-on: ubuntu-latest
@@ -74,11 +72,11 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Install tox
-        run: uv pip install --system tox
+      - name: Install dependencies
+        run: uv sync --frozen --python ${{ matrix.python-version }}
 
       - name: Run tests
-        run: tox -e ${{ matrix.tox-env }}
+        run: uv run --frozen --python ${{ matrix.python-version }} tox -e ${{ matrix.tox-env }}
 
       - name: Upload to Codecov
         if: success() && matrix.tox-env == 'py312-django52' && github.actor != 'dependabot[bot]'
@@ -123,11 +121,9 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Install build dependencies
-        run: uv pip install --system build twine
-
-      - name: Build package
-        run: python -m build
-
-      - name: Publish package
-        run: twine upload dist/* --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
+      - name: Build and publish package
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          uv build --python 3.12
+          uv publish

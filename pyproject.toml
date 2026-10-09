@@ -1,16 +1,16 @@
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [ "poetry-core" ]
+build-backend = "hatchling.build"
+requires = [ "hatchling" ]
 
-[tool.poetry]
+[project]
 name = "django-wait-for-db"
 version = "1.0.6"
 description = "Simple Django app that provides a simple command to wait for the database to be ready before starting the server."
-authors = [ "enzo_frnt" ]
-license = "MIT"
 readme = "README.md"
-keywords = [ "django and docker", "django database", "database", "wait for db" ]
-
+keywords = [ "database", "django and docker", "django database", "wait for db" ]
+license = { text = "MIT" }
+authors = [ { name = "enzo_frnt" } ]
+requires-python = ">=3.8,<4.0"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
@@ -22,7 +22,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -31,39 +30,17 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-
-packages = [
-  { include = "wait_for_db" },
+dependencies = [
+  "django>=4.2,<5.3; python_version>='3.10'",
+  "django>=4.2,<5; python_version>='3.8' and python_version<'3.10'",
 ]
 
-[tool.poetry.urls]
-"Documentation" = "https://github.com/enzofrnt/django_wait_for_db/blob/main/README.md"
-"Source Code" = "https://github.com/enzofrnt/django_wait_for_db"
-"Issues" = "https://github.com/enzofrnt/django_wait_for_db/issues"
+urls.Documentation = "https://github.com/enzofrnt/django_wait_for_db/blob/main/README.md"
+urls.Issues = "https://github.com/enzofrnt/django_wait_for_db/issues"
+urls."Source Code" = "https://github.com/enzofrnt/django_wait_for_db"
 
-[tool.poetry.dependencies]
-tox = "^4.16.0"
-python = ">=3.8,<4.0"
-django = [
-  { version = ">=4.2,<5.0", python = ">=3.8,<3.10" },
-  { version = ">=4.2,<5.3", python = ">=3.10" },      # Django 4.2 and 5.x for Python 3.10+
-]
-
-[tool.poetry.group.dev.dependencies]
-pytest = "8.3.5"
-pytest-django = "^4.8.0"
-pytest-cov = "^5.0.0"
-pylint = "^3.2.6"
-pylint-pytest = "^1.1.8"
-mypy = "^1.11.1"
-isort = "^5.13.2"
-black = "^24.4.2"
-pre-commit = "^3.5.0"
-bandit = { extras = [ "toml" ], version = "^1.7.9" }
-tox = "^4.16.0"
-django-stubs = "^5.0.4"
-codecov = "^2.1.13"
-python-semantic-release = ">=9.8.8,<11.0.0"
+[tool.hatch.build.targets.wheel]
+packages = [ "wait_for_db" ]
 
 [tool.black]
 line-length = 88
@@ -155,6 +132,28 @@ method-rgx = "[a-z_][a-z0-9_]{2,30}$"
 function-rgx = "[a-z_][a-z0-9_]{2,30}$"
 class-rgx = "[A-Z_][a-zA-Z0-9]+$"
 module-rgx = "(([a-z_][a-z0-9_]*)|(__.*__))$"
+
+[dependency-groups]
+dev = [
+  "bandit[toml]>=1.7.9,<2",
+  "black>=24.4.2,<25",
+  "codecov>=2.1.13,<3",
+  "django-stubs>=5.0.4,<6",
+  "isort>=5.13.2,<6",
+  "mypy>=1.11.1,<2",
+  "pre-commit>=3.5.0,<4",
+  "pylint>=3.2.6,<4",
+  "pylint-pytest>=1.1.8,<2",
+  "pytest==8.3.5",
+  "pytest-cov>=5.0.0,<6",
+  "pytest-django>=4.8.0,<5",
+  "python-semantic-release>=9.8.8,<11.0.0",
+  "tox>=4.16.0,<5",
+]
+
+[tool.semantic_release]
+build_command = "uv build"
+version_toml = [ "pyproject.toml:project.version" ]
 
 [tool.bandit]
 targets = [ "./wait_for_db" ]

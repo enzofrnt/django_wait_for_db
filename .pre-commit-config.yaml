@@ -10,7 +10,7 @@ repos:
       - id: end-of-file-fixer
         exclude: (migrations/|tests/).*
       - id: check-added-large-files
-        exclude: (migrations/|tests/).*
+        exclude: (migrations/|tests/|uv\.lock)
       - id: check-case-conflict
         exclude: (migrations/|tests/).*
       - id: check-merge-conflict
@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: pytest
         name: Pytest
-        entry: uv run --with pytest --with pytest-django --with pytest-cov --with "django>=4.2,<5.3" pytest -v
+        entry: uv run --frozen pytest -v
         language: system
         types: [ python ]
         stages: [ commit ]
@@ -67,7 +67,7 @@ repos:
 
       - id: pylint
         name: pylint
-        entry: uv run --with "pylint>=3.2.6,<4" --with pylint-pytest --with "django>=4.2,<5.3" pylint
+        entry: uv run --frozen pylint
         language: system
         types: [ python ]
         require_serial: true
